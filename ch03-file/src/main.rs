@@ -1,3 +1,9 @@
+use rand::Rng;
+
+fn one_in(n: u32) -> bool {
+    rand::thread_rng().gen_bool(1.0 / n as f64)
+}
+
 #[derive(Debug)]
 struct File {
     name: String,
@@ -12,37 +18,47 @@ impl File {
         }
     }
 
-    fn new_with_data(name: &str, data: Vec<u8>) -> File {
+    fn new_with_data(name: &str, data: &Vec<u8>) -> File {
         File {
             name: name.into(),
-            data,
+            data: data.clone(),
         }
     }
 
-    fn read(self: &File, save_to: &mut Vec<u8>) -> usize {
+    fn read(self: &File, save_to: &mut Vec<u8>) -> Result<usize, String> {
         save_to.reserve(self.data.len());
         save_to.append(self.data.clone().as_mut());
-        self.data.len()
+        Ok(self.data.len())
     }
 }
 
-fn open(f: &mut File) -> bool {
-    true
+fn open(f: File) -> Result<File, String> {
+    if one_in(10_000) {
+        let err_msg = String::from("permission denied");
+        return Err(err_msg);
+    }
+
+    Ok(f)
 }
 
-fn close(f: &mut File) -> bool {
-    true
+fn close(f: File) -> Result<File, String> {
+    if one_in(100_000) {
+        let err_msg = String::from("interrupted by signal");
+        return Err(err_msg);
+    }
+
+    Ok(f)
 }
 
 fn main() {
-    let mut f1 = File::new_with_data("f1.txt", vec![114, 117, 115, 116, 33]);
+    let mut f1 = File::new_with_data("f1.txt", &vec![114, 117, 115, 116, 33]);
     let mut _f2 = File::new("f2.txt");
 
     let mut buf: Vec<u8> = vec![];
 
-    open(&mut f1);
-    let f1_length = f1.read(&mut buf);
-    close(&mut f1);
+    f1 = open(f1).unwrap();
+    let f1_length = f1.read(&mut buf).unwrap();
+    f1 = close(f1).unwrap();
 
     // use buffer
     let text = String::from_utf8_lossy(&buf);
