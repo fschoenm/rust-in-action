@@ -6,7 +6,7 @@ fn one_in(n: u32) -> bool {
 }
 
 #[derive(Debug, PartialEq)]
-enum FileState {
+pub enum FileState {
     Open,
     Closed,
 }
@@ -21,10 +21,10 @@ impl Display for FileState {
 }
 
 #[derive(Debug)]
-struct File {
-    name: String,
+pub struct File {
+    pub name: String,
     data: Vec<u8>,
-    state: FileState,
+    pub state: FileState,
 }
 
 impl Display for File {
@@ -38,7 +38,7 @@ trait Read {
 }
 
 impl File {
-    fn new(name: &str) -> File {
+    pub fn new(name: &str) -> File {
         File {
             name: name.into(),
             data: Vec::new(),
@@ -46,7 +46,7 @@ impl File {
         }
     }
 
-    fn new_with_data(name: &str, data: &Vec<u8>) -> File {
+    pub fn new_with_data(name: &str, data: &Vec<u8>) -> File {
         File {
             name: name.into(),
             data: data.clone(),
@@ -68,7 +68,7 @@ impl Read for File {
     }
 }
 
-fn open(mut f: File) -> Result<File, String> {
+pub fn open(mut f: File) -> Result<File, String> {
     if one_in(10_000) {
         let err_msg = String::from("permission denied");
         return Err(err_msg);
@@ -78,7 +78,7 @@ fn open(mut f: File) -> Result<File, String> {
     Ok(f)
 }
 
-fn close(mut f: File) -> Result<File, String> {
+pub fn close(mut f: File) -> Result<File, String> {
     if one_in(100_000) {
         let err_msg = String::from("interrupted by signal");
         return Err(err_msg);
