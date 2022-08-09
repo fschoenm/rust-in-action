@@ -5,4 +5,5 @@ members = [
     "ch02-complex",
     "ch02-grep-lite",
     "ch02-mandelbrot",
+    "ch03-file",
 ]
