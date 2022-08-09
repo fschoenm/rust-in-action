@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "ch01-hello",
+    "ch01-penguins",
+    "ch02-complex",
+    "ch02-grep-lite",
+    "ch02-mandelbrot",
+]
