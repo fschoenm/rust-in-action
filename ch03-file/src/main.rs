@@ -1,4 +1,5 @@
 use rand::Rng;
+use std::fmt::Display;
 
 fn one_in(n: u32) -> bool {
     rand::thread_rng().gen_bool(1.0 / n as f64)
@@ -10,11 +11,26 @@ enum FileState {
     Closed,
 }
 
+impl Display for FileState {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            FileState::Open => write!(f, "OPEN"),
+            FileState::Closed => write!(f, "CLOSED"),
+        }
+    }
+}
+
 #[derive(Debug)]
 struct File {
     name: String,
     data: Vec<u8>,
     state: FileState,
+}
+
+impl Display for File {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "<{} ({})>", self.name, self.state)
+    }
 }
 
 trait Read {
@@ -86,6 +102,6 @@ fn main() {
     let text = String::from_utf8_lossy(&buf);
 
     println!("{:?}", f1);
-    println!("{} is {} bytes long", &f1.name, f1_length);
+    println!("{} is {} bytes long", &f1, f1_length);
     println!("{}", text);
 }
