@@ -35,7 +35,7 @@ impl Display for File {
 }
 
 trait Read {
-    fn read(self: &Self, save_to: &mut Vec<u8>) -> Result<usize, String>;
+    fn read(&self, save_to: &mut Vec<u8>) -> Result<usize, String>;
 }
 
 impl File {
@@ -49,10 +49,10 @@ impl File {
     }
 
     /// Creates a new file with the given name and initial contents.
-    pub fn new_with_data(name: &str, data: &Vec<u8>) -> File {
+    pub fn new_with_data(name: &str, data: &[u8]) -> File {
         File {
             name: name.into(),
-            data: data.clone(),
+            data: Vec::from(data),
             state: FileState::Closed,
         }
     }
@@ -65,6 +65,11 @@ impl File {
     /// Returns the file's length in bytes.
     pub fn len(&self) -> usize {
         self.data.len()
+    }
+
+    /// Checks if the file's length is 0.
+    pub fn is_empty(&self) -> bool {
+        self.data.is_empty()
     }
 }
 
@@ -102,7 +107,7 @@ pub fn close(mut f: File) -> Result<File, String> {
 }
 
 fn main() {
-    let mut f1 = File::new_with_data("f1.txt", &vec![114, 117, 115, 116, 33]);
+    let mut f1 = File::new_with_data("f1.txt", &[114, 117, 115, 116, 33]);
     let mut _f2 = File::new("f2.txt");
 
     let mut buf: Vec<u8> = vec![];
