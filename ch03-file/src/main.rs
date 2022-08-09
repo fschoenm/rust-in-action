@@ -20,6 +20,7 @@ impl Display for FileState {
     }
 }
 
+/// Represents a "file", which probably lives on a file system.
 #[derive(Debug)]
 pub struct File {
     pub name: String,
@@ -38,6 +39,7 @@ trait Read {
 }
 
 impl File {
+    /// Creates an empty new file.
     pub fn new(name: &str) -> File {
         File {
             name: name.into(),
@@ -46,12 +48,23 @@ impl File {
         }
     }
 
+    /// Creates a new file with the given name and initial contents.
     pub fn new_with_data(name: &str, data: &Vec<u8>) -> File {
         File {
             name: name.into(),
             data: data.clone(),
             state: FileState::Closed,
         }
+    }
+
+    /// Returns the file's name.
+    pub fn name(&self) -> &str {
+        self.name.as_str()
+    }
+
+    /// Returns the file's length in bytes.
+    pub fn len(&self) -> usize {
+        self.data.len()
     }
 }
 
