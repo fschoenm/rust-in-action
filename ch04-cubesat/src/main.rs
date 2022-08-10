@@ -42,15 +42,24 @@ struct Mailbox {
 }
 
 fn main() {
-    let sat_a = CubeSat::new(0);
-    let sat_b = CubeSat::new(1);
-    let sat_c = CubeSat::new(2);
+    let base = GroundStation {};
 
+    let mut sat_a = CubeSat::new(0);
+    let mut sat_b = CubeSat::new(1);
+    let mut sat_c = CubeSat::new(2);
+
+    // status check
     let status_a = check_status(&sat_a);
     let status_b = check_status(&sat_b);
     let status_c = check_status(&sat_c);
     println!("a={:?} b={:?} c={:?}", status_a, status_b, status_c);
 
+    base.send(&mut sat_a, Message::from("hello there!"));
+
+    let msg = sat_a.recv();
+    println!("msg={:?}", msg);
+
+    // status check
     let status_a = check_status(&sat_a);
     let status_b = check_status(&sat_b);
     let status_c = check_status(&sat_c);
