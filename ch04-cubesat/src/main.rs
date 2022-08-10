@@ -11,9 +11,19 @@ impl CubeSat {
             mailbox: Mailbox { messages: vec![] },
         }
     }
+
+    fn recv(&mut self) -> Option<Message> {
+        self.mailbox.messages.pop()
+    }
 }
 
 struct GroundStation;
+
+impl GroundStation {
+    fn send(&self, to: &mut CubeSat, msg: Message) {
+        to.mailbox.messages.push(msg)
+    }
+}
 
 #[derive(Debug)]
 enum StatusMessage {
