@@ -2,8 +2,10 @@ const MEMORY_SIZE: usize = 0x1000;
 
 struct CPU {
     registers: [u8; 16],
-    program_counter: usize,
     memory: [u8; MEMORY_SIZE],
+    stack: [u16; 16],
+    program_counter: usize,
+    stack_pointer: usize,
 }
 
 impl CPU {
@@ -32,10 +34,35 @@ impl CPU {
                 (0, 0, 0, 0) => {
                     return;
                 }
+                (0, 0, 0xe, 0xe) => self.ret(),
+                (0x2, _, _, _) => self.call(nnn),
                 (0x8, _, _, 0x4) => self.add_xy(x, y),
                 _ => todo!("opcode {:04x}", opcode),
             }
         }
+    }
+
+    fn call(&mut self, nnn: u16) {
+        let sp = self.stack_pointer;
+        let stack = &mut self.stack;
+
+        if sp > stack.len() {
+            panic!("Stack overflow!");
+        }
+
+        stack[sp] = self.program_counter as u16;
+        self.stack_pointer += 1;
+        self.program_counter = nnn as usize;
+    }
+
+    fn ret(&mut self) {
+        if self.stack_pointer == 0 {
+            panic!("Stack underflow!");
+        }
+
+        self.stack_pointer -= 1;
+        let addr = self.stack[self.stack_pointer];
+        self.program_counter = addr as usize;
     }
 
     fn add_xy(&mut self, x: u8, y: u8) {
@@ -57,24 +84,32 @@ fn main() {
     let mut cpu = CPU {
         registers: [0; 16],
         memory: [0; MEMORY_SIZE],
+        stack: [0; 16],
         program_counter: 0,
+        stack_pointer: 0,
     };
 
     cpu.registers[0] = 5;
     cpu.registers[1] = 10;
-    cpu.registers[2] = 10;
-    cpu.registers[3] = 10;
 
     let mem = &mut cpu.memory;
-    mem[0] = 0x80;
-    mem[1] = 0x14;
-    mem[2] = 0x80;
-    mem[3] = 0x24;
-    mem[4] = 0x80;
-    mem[5] = 0x34;
+
+    mem[0x000] = 0x21;
+    mem[0x001] = 0x00;
+    mem[0x002] = 0x21;
+    mem[0x003] = 0x00;
+    mem[0x004] = 0x00;
+    mem[0x005] = 0x00;
+
+    mem[0x100] = 0x80;
+    mem[0x101] = 0x14;
+    mem[0x102] = 0x80;
+    mem[0x103] = 0x14;
+    mem[0x104] = 0x00;
+    mem[0x105] = 0xEE;
 
     cpu.run();
 
-    assert_eq!(cpu.registers[0], 35);
+    assert_eq!(cpu.registers[0], 45);
     println!("result: {:?}", cpu.registers);
 }
