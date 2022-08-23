@@ -9,4 +9,5 @@ members = [
     "ch04-cubesat",
     "ch05-cpu",
     "ch06-particles",
+    "ch07-serde",
 ]
