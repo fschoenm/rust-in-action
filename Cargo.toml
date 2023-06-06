@@ -11,4 +11,5 @@ members = [
     "ch06-particles",
     "ch07-serde",
     "ch07-hexdump",
+    "ch07-actionkv",
 ]
