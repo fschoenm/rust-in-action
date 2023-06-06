@@ -15,4 +15,5 @@ members = [
     "ch08-simple",
     "ch08-rpg",
     "ch08-stdlib",
+    "ch08-resolve",
 ]
