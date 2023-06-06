@@ -14,4 +14,5 @@ members = [
     "ch07-actionkv",
     "ch08-simple",
     "ch08-rpg",
+    "ch08-stdlib",
 ]
