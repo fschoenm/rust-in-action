@@ -13,4 +13,5 @@ members = [
     "ch07-hexdump",
     "ch07-actionkv",
     "ch08-simple",
+    "ch08-rpg",
 ]
